@@ -1,54 +1,37 @@
 <?php
 
-namespace FM\SingleSignOnBundle\Entity;
-
-use Doctrine\ORM\Mapping as ORM;
+namespace Krtv\SingleSignOn\Model;
 
 /**
- * FM\SingleSignOnBundle\Entity\OTP
- *
- * @ORM\Table(name="fm_otp")
- * @ORM\Entity
+ * Class OneTimePassword
+ * @package Krtv\SingleSignOn\Model
  */
 class OneTimePassword
 {
     /**
      * @var integer $id
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string $password
-     *
-     * @ORM\Column(name="password", type="string", unique=true)
      */
     protected $password;
 
     /**
      * @var string $hash
-     *
-     * @ORM\Column(name="hash", type="string", unique=true)
      */
     protected $hash;
 
     /**
      * @var boolean $used
-     *
-     * @ORM\Column(name="used", type="boolean")
      */
     protected $used;
 
     /**
-     * @var datetime $created
-     *
-     * @ORM\Column(name="created", type="datetime")
+     * @var \Datetime $created
      */
     protected $created;
-
 
     /**
      * Get id
@@ -123,7 +106,7 @@ class OneTimePassword
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param \Datetime $created
      */
     public function setCreated($created)
     {
@@ -133,10 +116,10 @@ class OneTimePassword
     /**
      * Get created
      *
-     * @return datetime
+     * @return \Datetime
      */
     public function getCreated()
     {
         return $this->created;
     }
-}
+} 

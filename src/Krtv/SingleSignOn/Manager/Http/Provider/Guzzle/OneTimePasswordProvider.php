@@ -38,7 +38,7 @@ class OneTimePasswordProvider implements ProviderInterface
     }
 
     /**
-     * @param $otp
+     * @param string $otp
      * @return OneTimePassword|null|void
      * @throws HttpException
      * @throws \Exception
@@ -53,7 +53,7 @@ class OneTimePasswordProvider implements ProviderInterface
             $data = json_decode($response->getBody(true), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 if (null !== $this->logger) {
-                    $this->logger->err(sprintf('json_decode error. Gateway response: %s', $response));
+                    $this->logger->error(sprintf('json_decode error. Gateway response: %s', $response));
                 }
 
                 return null;
@@ -68,13 +68,13 @@ class OneTimePasswordProvider implements ProviderInterface
             return $otp;
         } catch (HttpException $e) {
             if (null !== $this->logger) {
-                $this->logger->err($e->getMessage());
+                $this->logger->error($e->getMessage());
             }
 
             return null;
         } catch (\Exception $e) {
             if (null !== $this->logger) {
-                $this->logger->crit($e->getMessage());
+                $this->logger->critical($e->getMessage());
             }
 
             throw $e;

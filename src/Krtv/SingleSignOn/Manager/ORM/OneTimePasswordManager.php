@@ -40,7 +40,9 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
      */
     public function create($hash)
     {
-        $otp = $this->entityManager->getRepository($this->class)->findByHash($hash);
+        $otp = $this->entityManager->getRepository($this->class)->findOneBy(array(
+            'hash' => $hash,
+        ));
         if (!empty($otp)) {
             throw new \Exception(sprintf('A one-time-password for hash "%s" already exists', $hash));
         }
@@ -90,7 +92,9 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
      */
     public function get($pass)
     {
-        return $this->entityManager->getRepository($this->class)->findOneByPassword($pass);
+        return $this->entityManager->getRepository($this->class)->findOneBy(array(
+            'password' => $pass,
+        ));
     }
 
     /**

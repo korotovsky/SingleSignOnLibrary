@@ -1,5 +1,5 @@
-Single Sign On Identity Provider
-================================
+Single Sign On Library
+======================
 
 [![Build Status](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/build.png?b=master)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/?branch=master)

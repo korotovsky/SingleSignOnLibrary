@@ -122,4 +122,4 @@ class OneTimePassword
     {
         return $this->created;
     }
-} 
+}

@@ -15,4 +15,4 @@ interface ProviderInterface
      * @return OneTimePassword|null
      */
     public function fetch($otp);
-} 
+}

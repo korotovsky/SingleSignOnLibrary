@@ -7,3 +7,5 @@ That said, if you'd like to contribute to make this bundle better/safer, you can
 Description
 -----------
 This is shared library for SingleSignOnIdentityProvider and SingleSignOnServiceProvider bundles for Symfony2
+
+@TODO: Update README.md

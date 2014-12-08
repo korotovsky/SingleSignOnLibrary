@@ -34,7 +34,7 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
-     * @param $hash
+     * @param string $hash
      * @return string
      * @throws \Exception
      */

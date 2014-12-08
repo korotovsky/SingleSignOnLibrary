@@ -13,8 +13,8 @@ interface OneTimePasswordManagerInterface
     /**
      * Create OTP
      *
-     * @param $hash
-     * @return OneTimePassword
+     * @param string $hash
+     * @return string
      */
     public function create($hash);
 

@@ -67,7 +67,6 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
                 $otp->setCreated(new \DateTime());
 
                 $this->entityManager->persist($otp);
-                $this->entityManager->flush();
             } catch (DBALException $e) {
                 // Catch all DBAL errors here
             }
@@ -82,6 +81,8 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
         if ($password === null) {
             throw new \Exception('Could not create a one-time-password');
         }
+
+        $this->entityManager->flush();
 
         return $password;
     }

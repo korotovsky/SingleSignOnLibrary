@@ -5,7 +5,7 @@ namespace Krtv\SingleSignOn\Manager\ORM;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Krtv\SingleSignOn\Manager\OneTimePasswordManagerInterface;
-use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 
 /**
  * Class OneTimePasswordManager
@@ -34,9 +34,11 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
+     * Creates OTP
+     *
      * @param string $hash
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function create($hash)
     {
@@ -55,7 +57,7 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
         while (++$i < 20) {
             $pass = $this->generateRandomValue();
 
-            /** @var OneTimePassword $otp */
+            /** @var OneTimePasswordInterface $otp */
             $otp = new $this->class();
 
             // We have unique index on `password` field, so try to insert immediate
@@ -88,8 +90,10 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
+     * Fetches OTP
+     *
      * @param $pass
-     * @return \Krtv\SingleSignOn\Model\OneTimePassword|null
+     * @return OneTimePasswordInterface|null
      */
     public function get($pass)
     {
@@ -99,18 +103,23 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
-     * @param OneTimePassword $otp
-     * @return bool
+     * Checks if OTP token is valid ot not
+     *
+     * @param OneTimePasswordInterface $otp
+     * @return boolean
      */
-    public function isValid(OneTimePassword $otp)
+    public function isValid(OneTimePasswordInterface $otp)
     {
         return $otp->getUsed() === false;
     }
 
     /**
-     * @param OneTimePassword $otp
+     * Invalidates OTP token
+     *
+     * @param OneTimePasswordInterface $otp
+     * @return void
      */
-    public function invalidate(OneTimePassword $otp)
+    public function invalidate(OneTimePasswordInterface $otp)
     {
         $otp->setUsed(true);
         $this->entityManager->flush();

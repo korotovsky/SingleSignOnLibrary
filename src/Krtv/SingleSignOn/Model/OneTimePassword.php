@@ -6,7 +6,7 @@ namespace Krtv\SingleSignOn\Model;
  * Class OneTimePassword
  * @package Krtv\SingleSignOn\Model
  */
-class OneTimePassword
+class OneTimePassword implements OneTimePasswordInterface
 {
     /**
      * @var integer $id

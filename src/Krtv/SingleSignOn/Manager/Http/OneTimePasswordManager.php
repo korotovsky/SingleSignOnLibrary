@@ -2,7 +2,7 @@
 
 namespace Krtv\SingleSignOn\Manager\Http;
 
-use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 use Krtv\SingleSignOn\Manager\OneTimePasswordManagerInterface;
 use Krtv\SingleSignOn\Manager\Http\Provider\ProviderInterface;
 
@@ -26,8 +26,10 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
-     * @param $hash
-     * @return OneTimePassword|void
+     * Creates OTP
+     *
+     * @param string $hash
+     * @return string
      */
     public function create($hash)
     {
@@ -35,8 +37,10 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
+     * Fetches OTP
+     *
      * @param $pass
-     * @return \Krtv\SingleSignOn\Model\OneTimePassword|null
+     * @return OneTimePasswordInterface|null
      */
     public function get($pass)
     {
@@ -44,10 +48,12 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
-     * @param OneTimePassword $otp
-     * @return bool
+     * Checks if OTP token is valid ot not
+     *
+     * @param OneTimePasswordInterface $otp
+     * @return boolean
      */
-    public function isValid(OneTimePassword $otp)
+    public function isValid(OneTimePasswordInterface $otp)
     {
         return $otp->getUsed() === false;
     }
@@ -55,9 +61,9 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     /**
      * Rest service must invalidate OTP token immediate after fetch.
      *
-     * @param OneTimePassword $otp
+     * @param OneTimePasswordInterface $otp
      */
-    public function invalidate(OneTimePassword $otp)
+    public function invalidate(OneTimePasswordInterface $otp)
     {
     }
 }

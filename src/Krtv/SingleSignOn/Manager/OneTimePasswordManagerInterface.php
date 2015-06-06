@@ -2,7 +2,7 @@
 
 namespace Krtv\SingleSignOn\Manager;
 
-use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 
 /**
  * Interface OneTimePasswordManagerInterface
@@ -11,7 +11,7 @@ use Krtv\SingleSignOn\Model\OneTimePassword;
 interface OneTimePasswordManagerInterface
 {
     /**
-     * Create OTP
+     * Creates OTP
      *
      * @param string $hash
      * @return string
@@ -19,22 +19,26 @@ interface OneTimePasswordManagerInterface
     public function create($hash);
 
     /**
-     * Fetch OTP
+     * Fetches OTP
      *
      * @param $pass
-     * @return OneTimePassword|null
+     * @return OneTimePasswordInterface|null
      */
     public function get($pass);
 
     /**
-     * @param OneTimePassword $otp
+     * Checks if OTP token is valid ot not
+     *
+     * @param OneTimePasswordInterface $otp
      * @return boolean
      */
-    public function isValid(OneTimePassword $otp);
+    public function isValid(OneTimePasswordInterface $otp);
 
     /**
-     * @param OneTimePassword $otp
+     * Invalidates OTP token
+     *
+     * @param OneTimePasswordInterface $otp
      * @return void
      */
-    public function invalidate(OneTimePassword $otp);
+    public function invalidate(OneTimePasswordInterface $otp);
 }

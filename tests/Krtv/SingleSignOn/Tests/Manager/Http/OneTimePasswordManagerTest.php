@@ -3,7 +3,6 @@
 namespace Krtv\SingleSignOn\Tests\Manager\Http;
 
 use Krtv\SingleSignOn\Manager\Http\OneTimePasswordManager;
-use Krtv\SingleSignOn\Model\OneTimePassword;
 
 /**
  * Class OneTimePasswordManagerTest

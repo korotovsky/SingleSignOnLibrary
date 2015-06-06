@@ -3,11 +3,12 @@
 namespace Krtv\SingleSignOn\Manager\Http\Provider\Guzzle;
 
 use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 use Krtv\SingleSignOn\Manager\Http\Provider\ProviderInterface;
 
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\HttpException;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class OneTimePasswordProvider
@@ -28,6 +29,7 @@ class OneTimePasswordProvider implements ProviderInterface
     /**
      * @param Client $client
      * @param $resource
+     * @param LoggerInterface $logger
      */
     public function __construct(Client $client, $resource, LoggerInterface $logger = null)
     {
@@ -39,7 +41,7 @@ class OneTimePasswordProvider implements ProviderInterface
 
     /**
      * @param string $otp
-     * @return OneTimePassword|null|void
+     * @return OneTimePasswordInterface|null
      * @throws HttpException
      * @throws \Exception
      */
@@ -60,7 +62,7 @@ class OneTimePasswordProvider implements ProviderInterface
             }
 
             $otp = new OneTimePassword();
-            $otp->setCreated($data['data']['created_at']);
+            $otp->setCreated(new \DateTime($data['data']['created_at']));
             $otp->setHash($data['data']['hash']);
             $otp->setPassword($data['data']['password']);
             $otp->setUsed($data['data']['is_used']);

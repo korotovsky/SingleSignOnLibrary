@@ -45,48 +45,28 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
         $otp = $this->entityManager->getRepository($this->class)->findOneBy(array(
             'hash' => $hash,
         ));
+
         if (!empty($otp)) {
             throw new \Exception(sprintf('A one-time-password for hash "%s" already exists', $hash));
         }
 
-        $password = null;
+        $pass = $this->generateRandomValue();
 
-        $i = 0;
+        /** @var OneTimePasswordInterface $otp */
+        $otp = new $this->class();
+        $otp->setHash($hash);
+        $otp->setPassword($pass);
+        $otp->setUsed(false);
+        $otp->setCreated(new \DateTime());
 
-        // 20 tries should be more than enough
-        while (++$i < 20) {
-            $pass = $this->generateRandomValue();
-
-            /** @var OneTimePasswordInterface $otp */
-            $otp = new $this->class();
-
-            // We have unique index on `password` field, so try to insert immediate
-            // To prevent unnecessary SELECT query
-            try {
-                $otp->setHash($hash);
-                $otp->setPassword($pass);
-                $otp->setUsed(false);
-                $otp->setCreated(new \DateTime());
-
-                $this->entityManager->persist($otp);
-            } catch (DBALException $e) {
-                // Catch all DBAL errors here
-            }
-
-            if ($otp->getId() !== null) {
-                $password = $otp->getPassword();
-
-                break;
-            }
+        try {
+            $this->entityManager->persist($otp);
+            $this->entityManager->flush();
+        } catch (DBALException $e) {
+            throw new \Exception('Could not create a one-time-password', $e->getCode(), $e);
         }
 
-        if ($password === null) {
-            throw new \Exception('Could not create a one-time-password');
-        }
-
-        $this->entityManager->flush();
-
-        return $password;
+        return $otp->getPassword();
     }
 
     /**

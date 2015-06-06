@@ -5,7 +5,7 @@ namespace Krtv\SingleSignOn\Manager\ORM;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Krtv\SingleSignOn\Manager\OneTimePasswordManagerInterface;
-use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 
 /**
  * Class OneTimePasswordManager
@@ -34,62 +34,46 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
+     * Creates OTP
+     *
      * @param string $hash
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function create($hash)
     {
         $otp = $this->entityManager->getRepository($this->class)->findOneBy(array(
             'hash' => $hash,
         ));
+
         if (!empty($otp)) {
             throw new \Exception(sprintf('A one-time-password for hash "%s" already exists', $hash));
         }
 
-        $password = null;
+        $pass = $this->generateRandomValue();
 
-        $i = 0;
+        /** @var OneTimePasswordInterface $otp */
+        $otp = new $this->class();
+        $otp->setHash($hash);
+        $otp->setPassword($pass);
+        $otp->setUsed(false);
+        $otp->setCreated(new \DateTime());
 
-        // 20 tries should be more than enough
-        while (++$i < 20) {
-            $pass = $this->generateRandomValue();
-
-            /** @var OneTimePassword $otp */
-            $otp = new $this->class();
-
-            // We have unique index on `password` field, so try to insert immediate
-            // To prevent unnecessary SELECT query
-            try {
-                $otp->setHash($hash);
-                $otp->setPassword($pass);
-                $otp->setUsed(false);
-                $otp->setCreated(new \DateTime());
-
-                $this->entityManager->persist($otp);
-            } catch (DBALException $e) {
-                // Catch all DBAL errors here
-            }
-
-            if ($otp->getId() !== null) {
-                $password = $otp->getPassword();
-
-                break;
-            }
+        try {
+            $this->entityManager->persist($otp);
+            $this->entityManager->flush();
+        } catch (DBALException $e) {
+            throw new \Exception('Could not create a one-time-password', $e->getCode(), $e);
         }
 
-        if ($password === null) {
-            throw new \Exception('Could not create a one-time-password');
-        }
-
-        $this->entityManager->flush();
-
-        return $password;
+        return $otp->getPassword();
     }
 
     /**
+     * Fetches OTP
+     *
      * @param $pass
-     * @return \Krtv\SingleSignOn\Model\OneTimePassword|null
+     * @return OneTimePasswordInterface|null
      */
     public function get($pass)
     {
@@ -99,18 +83,23 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     }
 
     /**
-     * @param OneTimePassword $otp
-     * @return bool
+     * Checks if OTP token is valid ot not
+     *
+     * @param OneTimePasswordInterface $otp
+     * @return boolean
      */
-    public function isValid(OneTimePassword $otp)
+    public function isValid(OneTimePasswordInterface $otp)
     {
         return $otp->getUsed() === false;
     }
 
     /**
-     * @param OneTimePassword $otp
+     * Invalidates OTP token
+     *
+     * @param OneTimePasswordInterface $otp
+     * @return void
      */
-    public function invalidate(OneTimePassword $otp)
+    public function invalidate(OneTimePasswordInterface $otp)
     {
         $otp->setUsed(true);
         $this->entityManager->flush();
@@ -119,6 +108,7 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     /**
      * @return string
      * @throws \Exception
+     * @codeCoverageIgnore
      */
     protected function generateRandomValue()
     {

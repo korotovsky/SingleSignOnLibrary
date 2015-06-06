@@ -2,7 +2,7 @@
 
 namespace Krtv\SingleSignOn\Manager\Http\Provider;
 
-use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 
 /**
  * Interface ProviderInterface
@@ -12,7 +12,7 @@ interface ProviderInterface
 {
     /**
      * @param $otp
-     * @return OneTimePassword|null
+     * @return OneTimePasswordInterface|null
      */
     public function fetch($otp);
 }

@@ -3,6 +3,7 @@
 namespace Krtv\SingleSignOn\Tests\Model;
 
 use Krtv\SingleSignOn\Model\OneTimePassword;
+use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 
 /**
  * Class OneTimePasswordTest
@@ -11,7 +12,7 @@ use Krtv\SingleSignOn\Model\OneTimePassword;
 class OneTimePasswordTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var OneTimePassword
+     * @var OneTimePasswordInterface
      */
     private $model;
 

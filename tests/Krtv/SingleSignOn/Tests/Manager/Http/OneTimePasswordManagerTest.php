@@ -66,6 +66,15 @@ class OneTimePasswordManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     *
+     */
+    public function testInvalidate()
+    {
+        $manager = new OneTimePasswordManager($this->getProviderMock());
+        $manager->invalidate($this->getMock('Krtv\SingleSignOn\Model\OneTimePasswordInterface'));
+    }
+
+    /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getProviderMock()

@@ -108,6 +108,7 @@ class OneTimePasswordManager implements OneTimePasswordManagerInterface
     /**
      * @return string
      * @throws \Exception
+     * @codeCoverageIgnore
      */
     protected function generateRandomValue()
     {

@@ -51,6 +51,41 @@ class OneTimePasswordProviderTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testFetchWithInvalidResponse()
+    {
+        $json = '{"data": }';
+
+        $responseMock = $this->getResponseMock();
+        $responseMock->expects($this->once())
+            ->method('getBody')
+            ->willReturn($json);
+        $responseMock->expects($this->once())
+            ->method('getMessage')
+            ->willReturn('fff');
+
+        $requestMock = $this->getRequestMock();
+        $requestMock->expects($this->once())
+            ->method('send')
+            ->willReturn($responseMock);
+
+        $clientMock = $this->getClientMock();
+        $clientMock->expects($this->once())
+            ->method('get')
+            ->withConsecutive(
+                array('?_otp=12345', null, array())
+            )
+            ->willReturn($requestMock);
+
+        $provider = new OneTimePasswordProvider($clientMock, '/api/v1/otp', new NullLogger());
+
+        $otp = $provider->fetch('12345');
+
+        $this->assertNull($otp);
+    }
+
+    /**
+     *
+     */
     public function testGatewayException()
     {
         $exception = new BadResponseException();
@@ -112,7 +147,7 @@ class OneTimePasswordProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder('Guzzle\Http\Message\Response')
             ->disableOriginalConstructor()
-            ->setMethods(array('getBody'))
+            ->setMethods(array('getBody', 'getMessage'))
             ->getMock();
     }
 

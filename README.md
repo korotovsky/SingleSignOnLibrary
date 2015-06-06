@@ -1,9 +1,10 @@
 Single Sign On Library
 ======================
 
-[![Build Status](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/build.png?b=master)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/a3a10e42-01c6-4d00-b5af-9bc787bd6c0a/mini.png)](https://insight.sensiolabs.com/projects/a3a10e42-01c6-4d00-b5af-9bc787bd6c0a)
+[![Build Status](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/build.png?b=0.1.x)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/build-status/0.1.x)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/quality-score.png?b=0.1.x)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/?branch=0.1.x)
+[![Code Coverage](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/badges/coverage.png?b=0.1.x)](https://scrutinizer-ci.com/g/korotovsky/SingleSignOnLibrary/?branch=0.1.x)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/a3a10e42-01c6-4d00-b5af-9bc787bd6c0a/mini.png)](https://insight.sensiolabs.com/projects/a3a10e42-01c6-4d00-b5af-9bc787bd6c0a)
 
 Disclaimer
 --------

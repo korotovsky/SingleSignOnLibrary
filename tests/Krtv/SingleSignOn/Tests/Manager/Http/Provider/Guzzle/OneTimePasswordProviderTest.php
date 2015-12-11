@@ -2,7 +2,10 @@
 
 namespace Krtv\SingleSignOn\Tests\Manager\Http\Provider\Guzzle;
 
-use Guzzle\Http\Exception\BadResponseException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Krtv\SingleSignOn\Manager\Http\Provider\Guzzle\OneTimePasswordProvider;
 use Psr\Log\NullLogger;
 
@@ -19,23 +22,11 @@ class OneTimePasswordProviderTest extends \PHPUnit_Framework_TestCase
     {
         $json = '{"data": {"created_at": "2015-01-01T10:00:00+00:00", "hash": "ABCD", "password": "12345", "is_used": false}}';
 
-        $responseMock = $this->getResponseMock();
-        $responseMock->expects($this->once())
-            ->method('getBody')
-            ->willReturn($json);
+        $mock = new MockHandler([
+            new Response(200, [], $json),
+        ]);
 
-        $requestMock = $this->getRequestMock();
-        $requestMock->expects($this->once())
-            ->method('send')
-            ->willReturn($responseMock);
-
-        $clientMock = $this->getClientMock();
-        $clientMock->expects($this->once())
-            ->method('get')
-            ->withConsecutive(
-                array('?_otp=12345', null, array())
-            )
-            ->willReturn($requestMock);
+        $clientMock = $this->getClientMock(HandlerStack::create($mock));
 
         $provider = new OneTimePasswordProvider($clientMock, '/api/v1/otp', new NullLogger());
 
@@ -55,89 +46,25 @@ class OneTimePasswordProviderTest extends \PHPUnit_Framework_TestCase
     {
         $json = '{"data": }';
 
-        $responseMock = $this->getResponseMock();
-        $responseMock->expects($this->once())
-            ->method('getBody')
-            ->willReturn($json);
-        $responseMock->expects($this->once())
-            ->method('getMessage')
-            ->willReturn('fff');
+        $mock = new MockHandler([
+            new Response(200, [], $json),
+        ]);
 
-        $requestMock = $this->getRequestMock();
-        $requestMock->expects($this->once())
-            ->method('send')
-            ->willReturn($responseMock);
-
-        $clientMock = $this->getClientMock();
-        $clientMock->expects($this->once())
-            ->method('get')
-            ->withConsecutive(
-                array('?_otp=12345', null, array())
-            )
-            ->willReturn($requestMock);
+        $clientMock = $this->getClientMock(HandlerStack::create($mock));
 
         $provider = new OneTimePasswordProvider($clientMock, '/api/v1/otp', new NullLogger());
 
         $otp = $provider->fetch('12345');
 
         $this->assertNull($otp);
-    }
-
-    /**
-     *
-     */
-    public function testGatewayException()
-    {
-        $exception = new BadResponseException();
-
-        $requestMock = $this->getRequestMock();
-        $requestMock->expects($this->once())
-            ->method('send')
-            ->willThrowException($exception);
-
-        $clientMock = $this->getClientMock();
-        $clientMock->expects($this->once())
-            ->method('get')
-            ->withConsecutive(
-                array('?_otp=12345', null, array())
-            )
-            ->willReturn($requestMock);
-
-        $provider = new OneTimePasswordProvider($clientMock, '/api/v1/otp', new NullLogger());
-
-        $otp = $provider->fetch('12345');
-
-        $this->assertNull($otp);
-    }
-
-    /**
-     *
-     */
-    public function testRuntimeException()
-    {
-        $exception = new \Exception();
-
-        $clientMock = $this->getClientMock();
-        $clientMock->expects($this->once())
-            ->method('get')
-            ->willThrowException($exception);
-
-        $provider = new OneTimePasswordProvider($clientMock, '/api/v1/otp', new NullLogger());
-
-        $this->setExpectedException('Exception');
-
-        $otp = $provider->fetch('12345');
     }
 
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getClientMock()
+    private function getClientMock($handler)
     {
-        return $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->setMethods(array('get'))
-            ->getMock();
+        return new Client(['handler' => $handler]);
     }
 
     /**

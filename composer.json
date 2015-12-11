@@ -15,13 +15,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.5",
 
-        "guzzle/http": ">=3.9",
-        "guzzle/plugin-mock": ">=3.9",
+        "guzzlehttp/guzzle": "~6.0",
 
-        "doctrine/orm": ">=2.3",
-        "symfony/symfony": ">=2.2",
+        "doctrine/orm": "~2.3",
+
+        "symfony/symfony": "~3.0",
 
         "ext-openssl": "*"
     },

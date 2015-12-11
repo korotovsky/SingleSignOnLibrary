@@ -2,12 +2,11 @@
 
 namespace Krtv\SingleSignOn\Manager\Http\Provider\Guzzle;
 
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
 use Krtv\SingleSignOn\Model\OneTimePassword;
 use Krtv\SingleSignOn\Model\OneTimePasswordInterface;
 use Krtv\SingleSignOn\Manager\Http\Provider\ProviderInterface;
-
-use Guzzle\Http\Client;
-use Guzzle\Http\Exception\HttpException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -17,9 +16,14 @@ use Psr\Log\LoggerInterface;
 class OneTimePasswordProvider implements ProviderInterface
 {
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $client;
+
+    /**
+     * @var string
+     */
+    private $resource;
 
     /**
      * @var LoggerInterface
@@ -27,35 +31,33 @@ class OneTimePasswordProvider implements ProviderInterface
     private $logger;
 
     /**
-     * @param Client $client
-     * @param $resource
+     * @param ClientInterface $client
+     * @param string          $resource
      * @param LoggerInterface $logger
      */
-    public function __construct(Client $client, $resource, LoggerInterface $logger = null)
+    public function __construct(ClientInterface $client, $resource, LoggerInterface $logger = null)
     {
         $this->client = $client;
-        $this->client->setBaseUrl($resource);
-
+        $this->resource = $resource;
         $this->logger = $logger;
     }
 
     /**
      * @param string $otp
      * @return OneTimePasswordInterface|null
-     * @throws HttpException
+     * @throws RequestException
      * @throws \Exception
      */
     public function fetch($otp)
     {
         try {
-            $request = $this->client->get(sprintf('?_otp=%s', $otp));
-            $response = $request->send();
+            $response = $this->client->request('GET', sprintf('%s?_otp=%s', $this->resource, $otp));
 
             // JMSSerializer here ??
-            $data = json_decode($response->getBody(true), true);
+            $data = json_decode($response->getBody()->getContents(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 if (null !== $this->logger) {
-                    $this->logger->error(sprintf('json_decode error. Gateway response: %s', $response));
+                    $this->logger->error(sprintf('json_decode error. Gateway response: %s', $response->getBody()->getContents()));
                 }
 
                 return null;
@@ -68,7 +70,7 @@ class OneTimePasswordProvider implements ProviderInterface
             $otp->setUsed($data['data']['is_used']);
 
             return $otp;
-        } catch (HttpException $e) {
+        } catch (RequestException $e) {
             if (null !== $this->logger) {
                 $this->logger->error($e->getMessage());
             }
